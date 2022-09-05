@@ -15,6 +15,9 @@ RUN apt-get update && apt-get install -y  \
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Defining Aliases
+RUN echo 'alias ll="ls -haltr --color"' >> ~/.bashrc
+
 # Get Composer
 COPY --from=composer:1.10.26 /usr/bin/composer /usr/bin/composer
 
