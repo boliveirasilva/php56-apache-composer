@@ -56,3 +56,6 @@ RUN echo 'instantclient,/usr/lib/oracle/12.1/client64/lib' | pecl install -f oci
 
 # PHP Configurations
 COPY "./apache2/php.ini" "$PHP_INI_DIR/php.ini"
+
+# Config GitHub on KnownHosts
+RUN mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
