@@ -21,10 +21,12 @@ RUN echo 'alias ll="ls -haltr --color"' >> ~/.bashrc
 # Get Composer
 COPY --from=composer:1.10.26 /usr/bin/composer /usr/bin/composer
 
-# Create system user to run Composer and Artisan Commands
+# Config GitHub on KnownHosts and Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
-RUN mkdir -p /home/$user/.composer && \
-    chown -R $user:$user /home/$user
+RUN mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts &&  \
+    install -D -v ~/.ssh/known_hosts -t /home/$user/.ssh &&  \
+    mkdir -p /home/$user/.composer && chown -R $user:$user /home/$user
+
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring sockets soap zip
@@ -56,6 +58,3 @@ RUN echo 'instantclient,/usr/lib/oracle/12.1/client64/lib' | pecl install -f oci
 
 # PHP Configurations
 COPY "./apache2/php.ini" "$PHP_INI_DIR/php.ini"
-
-# Config GitHub on KnownHosts
-RUN mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
